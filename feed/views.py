@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from feed.models import Tag,Post,Stream,Follow
+from feed.models import Tag,Post,Stream,Follow,Likes
 from django.contrib.auth.decorators import login_required
 from feed.forms import NewPostForm
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 # Create your views here.
 
@@ -87,3 +89,22 @@ def chat(request):
         'form':form
     }
     return render(request,'chat.html',context)
+
+
+############ LIKE ############
+
+def like(request,post_id):
+    user = request.user
+    post = Post.objects.get(id=post_id)
+    current_likes = post.likes
+    liked = Likes.objects.filter(user=user,post=post).count()
+    if not liked:
+        liked = Likes.objects.create(user=user,post=post)
+        current_likes = current_likes + 1
+    else:
+        liked = Likes.objects.filter(user=user,post=post).delete()
+        current_likes = current_likes - 1
+
+    post.likes = current_likes
+    post.save()
+    return HttpResponseRedirect(reverse('home'))
