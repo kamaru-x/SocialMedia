@@ -17,9 +17,13 @@
                                             alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                             style="width: 150px; z-index: 1">
                                             {% if profile.user == request.user %}
-                                                <button type="button" class="btn btn-primary" data-mdb-ripple-color="dark"style="z-index: 1;">Edit Profile</button>
+                                                <a href=""><button type="button" class="btn btn-primary" data-mdb-ripple-color="dark"style="z-index: 1;">Edit Profile</button></a>
                                             {% else %}
-                                                <button type="button" class="btn btn-primary" data-mdb-ripple-color="dark"style="z-index: 1;">follow</button>
+                                                {% if follow_status == True %}
+                                                    <a href="{% url 'follow' profile.user 0 %}"><button type="button" class="btn btn-primary" data-mdb-ripple-color="dark"style="z-index: 1;">unfollow</button></a>
+                                                {% else %}
+                                                    <a href="{% url 'follow' profile.user 1 %}"><button type="button" class="btn btn-primary" data-mdb-ripple-color="dark"style="z-index: 1;">follow</button></a>
+                                                {% endif %}
                                             {% endif %}
                                         </div>
                                     </div>
