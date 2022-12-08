@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from feed.models import Tag,Post,Stream,Follow
 from django.contrib.auth.decorators import login_required
 from feed.forms import NewPostForm
@@ -52,6 +52,21 @@ def newpost(request):
         'form' : form
     }
     return render(request,'newpost.html',context)
+
+############ TAG ############
+
+def tags(request,tag_slug):
+    tag = get_object_or_404(Tag,slug=tag_slug)
+    posts = Post.objects.filter(tag=tag).order_by('-posted')
+    form = NewPostForm()
+    newpost(request)
+    context = {
+        'tag' : tag,
+        'posts' : posts,
+        'form' : form,
+    }
+
+    return render(request,'tags.html',context)
 
 ############ PROFILE ############
 

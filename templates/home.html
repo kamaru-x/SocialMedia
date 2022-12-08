@@ -71,7 +71,7 @@
                       </div>
                       <div class="row pl-3">
                         {% for tag in post.tag.all %}
-                          <a href=""><p>#{{tag}},</p></a>
+                          <a href="{{tag.get_absolute_url}}"><p>#{{tag}},</p></a>
                         {% endfor %}
                       </div>
                     </div>
