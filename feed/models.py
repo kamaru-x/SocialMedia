@@ -31,7 +31,7 @@ class Tag(models.Model):
         return super().save(*args,**kwargs)
 
 class Post(models.Model):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4)
     picture = models.ImageField(upload_to=user_directory_path, verbose_name="picture",null=True)
     caption = models.CharField(max_length=100000,verbose_name='Caption')
     posted = models.DateTimeField(auto_now_add=True)
@@ -43,7 +43,7 @@ class Post(models.Model):
         return reverse('post-details',args=[str(self.id)])
 
     def __str__(self):
-        return self.user
+        return self.caption
 
 class Follow(models.Model):
     follower = models.ForeignKey(User,on_delete=models.CASCADE,related_name='follower')
@@ -60,4 +60,7 @@ class Stream(models.Model):
         user = post.user
         followers = Follow.objects.all().filter(following=user)
         for follower in followers:
-            stream = Stream(post,user=follower.follower,date=post.posted,following=user)
+            stream = Stream(post=post,user=follower.follower,date=post.posted,following=user)
+            stream.save()
+
+post_save.connect(Stream.add_post,sender=Post)
